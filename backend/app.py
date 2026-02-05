@@ -5,7 +5,6 @@ import time
 from io import BytesIO
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-from PIL import Image
 import replicate
 import openai
 from dotenv import load_dotenv
@@ -111,32 +110,22 @@ def enhance_prompt(user_prompt, style="realistic", room_type="living room"):
         return base_prompts.get(style, f"A beautifully designed {room_type} with {user_prompt}. {base_quality} Identical room structure, realistic.")
 
 def prepare_image(image_path):
-    """Prepare and optimize image"""
+    """
+    Basic image validation - Replicate API handles image processing
+    """
     try:
-        img = Image.open(image_path)
+        # Just verify the file exists and is readable
+        if not os.path.exists(image_path):
+            return False
         
-        # Convert to RGB if necessary
-        if img.mode in ('RGBA', 'LA'):
-            background = Image.new('RGB', img.size, (255, 255, 255))
-            if img.mode == 'RGBA':
-                background.paste(img, mask=img.split()[-1])
-            else:
-                background.paste(img, mask=img)
-            img = background
-        
-        # Resize if too large
-        max_size = 1024
-        if max(img.size) > max_size:
-            ratio = max_size / max(img.size)
-            new_size = tuple(int(dim * ratio) for dim in img.size)
-            img = img.resize(new_size, Image.Resampling.LANCZOS)
-        
-        # Save optimized
-        img.save(image_path, 'JPEG' if image_path.lower().endswith('.jpg') else 'PNG', 
-                quality=85, optimize=True)
+        # Check file size (max 16MB already enforced by Flask)
+        file_size = os.path.getsize(image_path)
+        if file_size > 16 * 1024 * 1024:
+            return False
+            
         return True
     except Exception as e:
-        print(f"Image preparation error: {e}")
+        print(f"Image validation error: {e}")
         return False
 
 def save_image_from_output(output, output_path):
