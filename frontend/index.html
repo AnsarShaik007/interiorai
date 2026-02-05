@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuxeInteriors AI | Transform Your Space</title>
+    
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header>
+            <div class="logo-area">
+                <i class="fa-solid fa-house-chimney" style="font-size: 30px;"></i>
+                <h1 class="app-title"> RoomReimagine AI</h1>
+            </div>
+            <p class="tagline">Curate your dream space with intelligent design</p>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="workspace">
+            
+            <!-- Left Panel: Input -->
+            <section class="panel input-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-compass"></i> Design Studio</h2>
+                </div>
+
+                <!-- 1. Upload Section -->
+                <div class="form-group">
+                    <label>1. Upload Your Room</label>
+                    
+                    <div class="upload-zone" id="uploadZone">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <h3>Drop image here or click to upload</h3>
+                        <p class="tagline">Supports JPG, PNG, WEBP (Max 16MB)</p>
+                    </div>
+                    <input type="file" id="imageInput" accept="image/*" hidden>
+
+                    <!-- Preview Area -->
+                    <div class="preview-container" id="previewContainer">
+                        <img id="previewImage" class="preview-img" alt="Room Preview">
+                        <button class="change-image-btn" id="changeImageBtn">
+                            <i class="fas fa-times"></i> Change Image
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. Configuration -->
+                <div class="form-group">
+                    <label>2. Room Type</label>
+                    <select id="roomType">
+                        <option value="living room">Living Room</option>
+                        <option value="bedroom">Bedroom</option>
+                        <option value="kitchen">Kitchen</option>
+                        <option value="bathroom">Bathroom</option>
+                        <option value="dining room">Dining Room</option>
+                        <option value="home office">Home Office</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>3. Select Style</label>
+                    <div class="style-grid">
+                        <div class="style-card active" data-style="modern">
+                            <i class="fas fa-cube style-icon"></i>
+                            <span>Modern</span>
+                        </div>
+                        <div class="style-card" data-style="scandinavian">
+                            <i class="fas fa-leaf style-icon"></i>
+                            <span>Scandi</span>
+                        </div>
+                        <div class="style-card" data-style="industrial">
+                            <i class="fas fa-industry style-icon"></i>
+                            <span>Industrial</span>
+                        </div>
+                        <div class="style-card" data-style="bohemian">
+                            <i class="fas fa-feather style-icon"></i>
+                            <span>Boho</span>
+                        </div>
+                        <div class="style-card" data-style="mid-century">
+                            <i class="fas fa-chair style-icon"></i>
+                            <span>Mid-Cent</span>
+                        </div>
+                        <div class="style-card" data-style="luxury">
+                            <i class="fas fa-gem style-icon"></i>
+                            <span>Luxury</span>
+                        </div>
+                    </div>
+                    <div id="styleTip" class="tip-text"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>4. Custom Vision (Optional)</label>
+                    <textarea id="prompt" rows="3" placeholder="Describe specific details (e.g., 'velvet blue sofa, gold lamp')..."></textarea>
+                    <button class="btn-secondary" id="enhanceBtn" style="margin-top: 10px; width: 100%;">
+                        <i class="fas fa-magic"></i> Enhance Prompt with AI
+                    </button>
+                </div>
+                <div class="form-group">
+                    <div id="errorMessage" style="color:var(--error-color); margin-bottom: 10px; font-weight: 500;"></div>
+                </div>
+
+                <button class="btn-primary" id="generateBtn">
+                    <span>Generate Design</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </section>
+
+            <!-- Right Panel: Result -->
+            <section class="panel result-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-image"></i> Transformation</h2>
+                </div>
+
+                <div id="resultArea" style="height: 100%;">
+                    
+                    <!-- Placeholder State -->
+                    <div class="result-placeholder" id="resultPlaceholder">
+                        <i class="fas fa-paint-roller" style="font-size: 3rem; margin-bottom: 20px; color: #ccc;"></i>
+                        <p>Your masterpiece will appear here</p>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div class="loading-overlay" id="loadingOverlay">
+                        <div class="spinner"></div>
+                        <p>Analyzing structure...</p>
+                        <p class="tagline">This usually takes about 30 seconds</p>
+                    </div>
+
+                    <!-- Result: Simple Stacked View -->
+                    <div id="resultsContainer" class="results-container" style="display: none;">
+                        <div class="result-card">
+                            <h3><i class="fas fa-magic"></i> AI Redesign</h3>
+                            <div class="img-wrapper">
+                                <img id="generatedResult" src="" alt="AI Redesign">
+                                <a id="downloadBtn" href="#" download="design.png" class="download-badge">
+                                    <i class="fas fa-download"></i> Download
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="result-card mt-4">
+                            <h3><i class="fas fa-camera"></i> Original</h3>
+                            <div class="img-wrapper">
+                                <img id="originalResult" src="" alt="Original Room">
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </section>
+
+        </main>
+
+        <footer>
+            <p>&copy; 2026 RoomReimagine AI. Powered by Glassy India.</p>
+        </footer>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>

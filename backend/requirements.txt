@@ -1,0 +1,7 @@
+flask
+flask-cors
+Pillow
+replicate
+openai==0.28
+python-dotenv
+requests
